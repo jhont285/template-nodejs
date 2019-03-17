@@ -1,36 +1,37 @@
 const HttpStatus = require('http-status-codes');
 const createError = require('http-errors');
-const compression = require('compression')
+const compression = require('compression');
 const express = require('express');
 const logger = require('morgan');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 
+require('express-async-errors');
+
 const app = express();
+
+const routes = require('./config/routes');
 
 mongoose.connect(process.env.URL_DB || 'mongodb://localhost/test', { useNewUrlParser: true });
 
 app.use(helmet());
-app.use(compression())
+app.use(compression());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-app.get('/hi', (req, res) => {
-  res.json("hello world!!!");
-})
+app.use('/v1', routes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => next(createError(HttpStatus.NOT_FOUND)));
 
 // error handler
-app.use((err, req, res, next) => {
+app.use((err, req, res, next) => {  // eslint-disable-line
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // res.locals.message = err.message;
+  // res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.sendStatus(err.status || HttpStatus.INTERNAL_SERVER_ERROR);
+  // send the error
+  res.status(err.status || HttpStatus.INTERNAL_SERVER_ERROR).json(err.message);
 });
 
 module.exports = app;
