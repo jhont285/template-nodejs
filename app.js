@@ -12,13 +12,13 @@ const app = express();
 
 const routes = require('./config/routes');
 
-mongoose.connect(process.env.URL_DB || 'mongodb://localhost/test', { useNewUrlParser: true });
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/test', { useNewUrlParser: true });
 
 app.use(helmet());
 app.use(compression());
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use('/v1', routes);
 
 // catch 404 and forward to error handler
