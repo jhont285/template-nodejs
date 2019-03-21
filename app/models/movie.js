@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 const movieSchema = new mongoose.Schema({
-  id: Number,
+  id: {
+    type: Number,
+    required: true,
+  },
   user: String,
   voteCount: Number,
   title: String,
