@@ -1,4 +1,4 @@
-const HttpStatus = require('http-status-codes');
+const { NOT_FOUND, INTERNAL_SERVER_ERROR } = require('http-status-codes');
 const createError = require('http-errors');
 const compression = require('compression');
 const express = require('express');
@@ -22,16 +22,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/v1', routes);
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => next(createError(HttpStatus.NOT_FOUND)));
+app.use((req, res, next) => next(createError(NOT_FOUND)));
 
 // error handler
 app.use((err, req, res, next) => {  // eslint-disable-line
   // set locals, only providing error in development
-  // res.locals.message = err.message;
-  // res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // send the error
-  res.status(err.status || HttpStatus.INTERNAL_SERVER_ERROR).json(err.message);
+  res.status(err.status || INTERNAL_SERVER_ERROR).json(err);
 });
 
 module.exports = app;

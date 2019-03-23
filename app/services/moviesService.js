@@ -2,46 +2,52 @@
 const HttpStatus = require('http-status-codes');
 const Movie = require('../models/movie');
 
-const { getStatusText } = HttpStatus;
+const {
+  getStatusText, OK, NOT_FOUND, UNPROCESSABLE_ENTITY, CREATED,
+} = HttpStatus;
 
 class MoviesService {
   async index() {
     const movies = await Movie.find();
-    return { status: HttpStatus.OK, data: movies };
+    return { status: OK, data: movies };
   }
 
   async show(id) {
     const movie = await Movie.findById(id);
-    if (!movie) return { status: HttpStatus.NOT_FOUND, data: getStatusText(HttpStatus.NOT_FOUND) };
-    return { status: HttpStatus.OK, data: movie };
+    if (!movie) return { status: NOT_FOUND, data: getStatusText(NOT_FOUND) };
+    return { status: OK, data: movie };
   }
 
   async create(body) {
+    let tmpMovie;
     try {
-      const tmpMovie = new Movie(body);
-      const movie = await tmpMovie.save();
-      return { status: HttpStatus.CREATED, data: movie };
-    } catch (error) {
-      return { status: HttpStatus.UNPROCESSABLE_ENTITY, data: error };
+      tmpMovie = new Movie(body);
+    } catch (err) {
+      return { status: UNPROCESSABLE_ENTITY, data: err };
     }
+
+    const movie = await tmpMovie.save();
+    return { status: CREATED, data: movie };
   }
 
   async update(id, body) {
+    let movie;
     try {
-      const movie = await Movie.findByIdAndUpdate(id, body, { new: true });
-      if (!movie) {
-        return { status: HttpStatus.NOT_FOUND, data: getStatusText(HttpStatus.NOT_FOUND) };
-      }
-      return { status: HttpStatus.CREATED, data: movie };
-    } catch (error) {
-      return { status: HttpStatus.UNPROCESSABLE_ENTITY, data: error };
+      movie = await Movie.findByIdAndUpdate(id, body, { new: true });
+    } catch (err) {
+      return { status: UNPROCESSABLE_ENTITY, data: err };
     }
+
+    if (!movie) {
+      return { status: NOT_FOUND, data: getStatusText(NOT_FOUND) };
+    }
+    return { status: CREATED, data: movie };
   }
 
   async delete(id) {
     const movie = await Movie.findByIdAndRemove(id);
-    if (!movie) return { status: HttpStatus.NOT_FOUND, data: getStatusText(HttpStatus.NOT_FOUND) };
-    return { status: HttpStatus.CREATED, data: movie };
+    if (!movie) return { status: NOT_FOUND, data: getStatusText(NOT_FOUND) };
+    return { status: CREATED, data: movie };
   }
 }
 
