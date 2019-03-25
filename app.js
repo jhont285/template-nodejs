@@ -4,15 +4,12 @@ const compression = require('compression');
 const express = require('express');
 const logger = require('morgan');
 const helmet = require('helmet');
-const mongoose = require('mongoose');
 
 require('express-async-errors');
 
 const app = express();
 
 const routes = require('./config/routes');
-
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/test', { useNewUrlParser: true });
 
 app.use(helmet());
 app.use(compression());

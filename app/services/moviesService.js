@@ -1,10 +1,10 @@
 /* eslint-disable class-methods-use-this */
-const HttpStatus = require('http-status-codes');
-const Movie = require('../models/movie');
 
 const {
   getStatusText, OK, NOT_FOUND, UNPROCESSABLE_ENTITY, CREATED,
-} = HttpStatus;
+} = require('http-status-codes');
+
+const Movie = require('../models/movie');
 
 class MoviesService {
   async index() {
@@ -38,9 +38,7 @@ class MoviesService {
       return { status: UNPROCESSABLE_ENTITY, data: err };
     }
 
-    if (!movie) {
-      return { status: NOT_FOUND, data: getStatusText(NOT_FOUND) };
-    }
+    if (!movie) return { status: NOT_FOUND, data: getStatusText(NOT_FOUND) };
     return { status: CREATED, data: movie };
   }
 
