@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const softDelete = require('mongoosejs-soft-delete');
+
 const movieSchema = new mongoose.Schema({
   id: {
     type: Number,
@@ -17,6 +19,8 @@ const movieSchema = new mongoose.Schema({
   overview: String,
   releaseDate: String,
 }, { timestamps: true });
+
+movieSchema.plugin(softDelete);
 
 const Movie = mongoose.model('Movie', movieSchema);
 

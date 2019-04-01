@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this, no-unused-vars */
 
-const { OK, NOT_FOUND } = require('http-status-codes');
+const { OK } = require('http-status-codes');
 
 const SessionsService = require('../services/sessionsService');
 
@@ -13,7 +13,7 @@ class SessionsController {
   async verify(req, res, next) {
     const token = req.header('access-token');
     const { status, data } = await SessionsService.verify(token);
-    if (status !== OK) return res.sendStatus(status).json(data);
+    if (status !== OK) return res.sendStatus(status);
 
     res.locals.user = { id: data.id };
     return next();

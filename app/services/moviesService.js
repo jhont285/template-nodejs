@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
 const {
-  getStatusText, OK, NOT_FOUND, UNPROCESSABLE_ENTITY, CREATED,
+  getStatusText, OK, NOT_FOUND, UNPROCESSABLE_ENTITY, CREATED, NO_CONTENT,
 } = require('http-status-codes');
 
 const Movie = require('../models/movie');
@@ -45,7 +45,7 @@ class MoviesService {
   async delete(id) {
     const movie = await Movie.findByIdAndRemove(id);
     if (!movie) return { status: NOT_FOUND, data: getStatusText(NOT_FOUND) };
-    return { status: CREATED, data: movie };
+    return { status: NO_CONTENT, data: getStatusText(NO_CONTENT) };
   }
 }
 
