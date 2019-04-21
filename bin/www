@@ -9,12 +9,6 @@ const http = require('http');
 const app = require('../app');
 
 /**
- * Config Data Base
- */
-const uriMongo = process.env.MONGODB_URI || 'mongodb://localhost/test';
-mongoose.connect(uriMongo, { useNewUrlParser: true });
-
-/**
  * Normalize a port into a number, string, or false.
  */
 function normalizePort(val) {
@@ -85,11 +79,18 @@ function onListening() {
   console.log(`Listening on ${bind}`);
 }
 
-
 /**
- * Listen on provided port, on all network interfaces.
+ * Config Data Base
  */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+const uriMongo = process.env.MONGODB_URI || 'mongodb://localhost/test';
+mongoose
+  .connect(uriMongo, { useNewUrlParser: true, useCreateIndex: true })
+  .then(() => {
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
+    server.listen(port);
+    server.on('listening', onListening);
+  }, () => {
+    server.on('error', onError);
+  });

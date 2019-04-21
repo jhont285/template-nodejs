@@ -29,19 +29,9 @@ class SessionsService {
     user.encryptedPassword = undefined;
     // eslint-disable-next-line dot-notation
     const token = await jwt.sign({ id: user['_id'] }, this.jwt);
-    return { status: OK, data: user, headers: { 'access-token': token } };
+    return { status: OK, data: { token } };
   }
 
-  async verify(token) {
-    try {
-      const validToken = await jwt.verify(token, this.jwt);
-      if (validToken) return { status: OK, data: validToken };
-
-      return { status: UNAUTHORIZED, data: getStatusText(UNAUTHORIZED) };
-    } catch (err) {
-      return { status: UNAUTHORIZED, data: getStatusText(UNAUTHORIZED) };
-    }
-  }
 }
 
 const sessionsService = new SessionsService();

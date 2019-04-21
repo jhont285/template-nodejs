@@ -14,12 +14,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
     required: true,
+    unique: true,
   },
   encryptedPassword: {
     type: String,
     required: true,
   },
-});
+}, { timestamps: true });
 
 
 const User = mongoose.model('User', userSchema);
