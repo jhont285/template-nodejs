@@ -28,7 +28,7 @@ class SessionsService {
 
     user.encryptedPassword = undefined;
     // eslint-disable-next-line dot-notation
-    const token = await jwt.sign({ id: user['_id'] }, this.jwt);
+    const token = await jwt.sign({ id: user['_id'] }, this.jwt, { expiresIn: '15d' });
     return { status: OK, data: { token } };
   }
 
