@@ -1,11 +1,11 @@
 /* eslint-disable class-methods-use-this */
 
-const {
-  getStatusText, UNAUTHORIZED, OK,
-} = require('http-status-codes');
+const { OK, UNAUTHORIZED } = require('http-status-codes');
+const { Strategy, ExtractJwt } = require('passport-jwt');
 
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 const User = require('../models/user');
 
 class SessionsService {
@@ -16,7 +16,7 @@ class SessionsService {
 
   async create(body) {
     const { email, password } = body;
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select('+encryptedPassword');
     if (!user) return { status: UNAUTHORIZED, data: this.invalidCredentials };
 
     try {
@@ -32,6 +32,27 @@ class SessionsService {
     return { status: OK, data: { token } };
   }
 
+  verify() {
+    const opts = {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: this.jwt,
+    };
+
+    const strategy = new Strategy(opts, async (jwtPayload, done) => {
+      try {
+        const user = await User.findById(jwtPayload.id);
+        if (user) {
+          return done(null, user);
+        }
+        return done(null, false);
+      } catch (err) {
+        return done(err, false);
+      }
+    });
+
+    passport.use(strategy);
+    return passport.authenticate('jwt', { session: false });
+  }
 }
 
 const sessionsService = new SessionsService();

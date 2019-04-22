@@ -8,7 +8,6 @@ const userSchema = new mongoose.Schema({
   nickName: {
     type: String,
     trim: true,
-    required: true,
   },
   email: {
     type: String,
@@ -17,6 +16,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
   encryptedPassword: {
+    select: false,
     type: String,
     required: true,
   },

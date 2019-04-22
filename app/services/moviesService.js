@@ -7,7 +7,7 @@ const {
 const Movie = require('../models/movie');
 
 class MoviesService {
-  async index() {
+  async index() {   
     const movies = await Movie.find();
     return { status: OK, data: movies };
   }

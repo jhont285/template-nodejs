@@ -6,10 +6,13 @@ const SessionsService = require('../services/sessionsService');
 
 class SessionsController {
   async create(req, res, next) {
-    const { status, data, headers } = await SessionsService.create(req.body);
+    const { status, data } = await SessionsService.create(req.body);
     return res.status(status).json(data);
   }
 
+  verify() {
+    return SessionsService.verify();
+  }
 }
 
 const sessionsController = new SessionsController();
